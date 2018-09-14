@@ -9,7 +9,7 @@ public:
     std::string wordToErase_;
 
 public:
-    Formatter(const std::string &, const std::string &, const std::string &);
+    Formatter(const std::string&, const std::string&, const std::string&);
 
     void sort();
 

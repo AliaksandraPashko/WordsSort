@@ -2,9 +2,9 @@
 #include "formatter/formatter.h"
 
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-   testing::InitGoogleTest(&argc, argv);
-   RUN_ALL_TESTS();
-   return 0;
+    testing::InitGoogleTest(&argc, argv);
+    RUN_ALL_TESTS();
+    return 0;
 }
