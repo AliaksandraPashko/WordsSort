@@ -6,18 +6,20 @@
 
 #include <boost/algorithm/string.hpp>
 
-Formatter :: Formatter(const std::string& inputFile, const std::string& outputFile, const std::string& wordToErase)
-: fin_(inputFile), fout_(outputFile), wordToErase_(wordToErase) {}
+Formatter::Formatter(const std::string& inputFile, const std::string& outputFile, const std::string& wordToErase)
+        : wordToErase_(wordToErase), fin_(inputFile), fout_(outputFile)
+        {
+         //   fin_.open(inputFile, std::ifstream::in);
+         //   fout_.open(outputFile, std::ofstream::out);
+        }
 
 
-void Formatter :: sort()
-{
+void Formatter::sort() {
     std::vector<std::string> words;
 
     std::string currentString;
 
-    if (fin_)
-    {
+    if (fin_.is_open()) {
         while (std::getline(fin_, currentString)) {
 
             std::istringstream istringStream(currentString);
@@ -29,8 +31,7 @@ void Formatter :: sort()
 
             words.erase(std::remove(words.begin(), words.end(), wordToErase_), words.end());
 
-            std::sort(words.begin(), words.end(), [](const std::string& str1, const std::string& str2)
-            {
+            std::sort(words.begin(), words.end(), [](const std::string &str1, const std::string &str2) {
                 return boost::algorithm::ilexicographical_compare(str1, str2);
             });
 
@@ -42,8 +43,7 @@ void Formatter :: sort()
 }
 
 
-Formatter::~Formatter()
-{
+Formatter::~Formatter() {
     fin_.close();
     fout_.close();
 }
