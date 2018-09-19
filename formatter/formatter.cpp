@@ -15,7 +15,7 @@ Formatter::Formatter(const std::string &inputFile, const std::string &outputFile
 
 void Formatter::sort()
 {
-    std::vector<std::string> words;
+    std::vector<std::string> strings;
 
     std::string currentString;
 
@@ -23,27 +23,24 @@ void Formatter::sort()
     {
         while (std::getline(fin_, currentString))
         {
+            size_t pos = currentString.find(wordToErase_);
 
-            std::istringstream istringStream(currentString);
+            while(pos != std::string::npos)
+            {
+                currentString.erase(pos, wordToErase_.size());
 
-            words.clear();
+                pos = currentString.find(wordToErase_);
+            }
 
-            std::copy(std::istream_iterator<std::string>(istringStream), std::istream_iterator<std::string>(),
-                      std::back_inserter(words));
-
-            assert(words.empty() == false);
-
-            words.erase(std::remove(words.begin(), words.end(), wordToErase_), words.end());
-
-            std::sort(words.begin(), words.end(), [](const std::string &str1, const std::string &str2) {
-                return boost::algorithm::ilexicographical_compare(str1, str2);
-            });
-
-            std::copy(words.begin(), words.end(), std::ostream_iterator<std::string>(fout_, " "));
-
-            fout_ << std::endl;
+            strings.push_back(currentString);
         }
+
+        std::sort(strings.begin(), strings.end(), [](const std::string &str1, const std::string &str2) {
+            return boost::algorithm::ilexicographical_compare(str1, str2);
+        });
     }
+
+    std::copy(strings.begin(), strings.end(), std::ostream_iterator<std::string>(fout_, "\n"));
 }
 
 

@@ -3,12 +3,26 @@
 #include <numeric>
 
 
-void readFile(const std::string& filePath, std::vector<std::string>& words)
+void readFile(const std::string& filePath, std::vector<std::string>& strings)
 {
-    std::ifstream file(filePath);
+    std::ifstream file;
+    file.open(filePath);
 
     std::string currentString;
 
+    while (std::getline(file, currentString)) {
+        strings.push_back(currentString);
+    }
+
+    file.close();
+}
+
+void readFileToWords(const std::string& filePath, std::vector<std::string>& words)
+{
+    std::ifstream file;
+    file.open(filePath);
+
+    std::string currentString;
     while (std::getline(file, currentString)) {
         std::istringstream istringStream(currentString);
 
@@ -18,6 +32,7 @@ void readFile(const std::string& filePath, std::vector<std::string>& words)
 
     file.close();
 }
+
 
 void writeTheFile(const std::string& filePath, const std::string& inputText )
 {
@@ -44,8 +59,9 @@ TEST(Tests, check_word_deleted)
 
     std::vector<std::string> fin_words, fout_words;
 
-    readFile(inputFilePath, fin_words);
-    readFile(outputFilePath, fout_words);
+    readFileToWords(inputFilePath, fin_words);
+    formatter.fout_.close();
+    readFileToWords(outputFilePath, fout_words);
 
     EXPECT_NE(fin_words.size(), fout_words.size());
 }
@@ -55,7 +71,7 @@ TEST(Tests, check_nothing_deleted)
 {
     std::string inputFilePath = "input.txt";
     std::string outputFilePath = "output.txt";
-    std::string wordToErase = "";
+    std::string wordToErase = "SSS";
 
     std::string inputText = "al al\ndd Af zxa";
 
@@ -65,32 +81,34 @@ TEST(Tests, check_nothing_deleted)
 
     formatter.sort();
 
-    std::vector<std::string> fin_words, fout_words;
+    std::vector<std::string> fin_strings, fout_strings;
 
-    readFile(inputFilePath, fin_words);
-    readFile(outputFilePath, fout_words);
+    readFile(inputFilePath, fin_strings);
+    formatter.fout_.close();
+    readFile(outputFilePath, fout_strings);
 
-    EXPECT_EQ(fin_words.size(), fout_words.size());
+    EXPECT_EQ(fin_strings.size(), fout_strings.size());
 }
 
 TEST(Tests, upper_case_ignored)
 {
     std::string inputFilePath = "input.txt";
     std::string outputFilePath = "output.txt";
-    std::string wordToErase = "";
+    std::string wordToErase = "SS";
 
-    std::string inputText = "aba Al";
+    std::string inputText = "Al\naba";
 
     writeTheFile(inputFilePath, inputText);
 
     Formatter formatter(inputFilePath, outputFilePath, wordToErase);
     formatter.sort();
 
-    std::vector<std::string> fout_words;
+    std::vector<std::string> fout_strings;
 
-    readFile(outputFilePath, fout_words);
+    formatter.fout_.close();
+    readFile(outputFilePath, fout_strings);
 
-    std::string sortResult = std::accumulate(fout_words.begin(), fout_words.end(), std::string(""));
+    std::string sortResult = std::accumulate(fout_strings.begin(), fout_strings.end(), std::string("\n"));
 
     EXPECT_NE(inputText, sortResult);
 }
